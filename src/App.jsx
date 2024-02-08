@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useRef, useState, useCallback} from 'react';
 
 import Places from './components/Places.jsx';
 import { AVAILABLE_PLACES } from './data.js';
@@ -54,15 +54,21 @@ function App() {
     }
   }
 
-  function handleRemovePlace() {
-    setPickedPlaces((prevPickedPlaces) =>
-      prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
-    );
-    setModalIsOpen(false);
+  const handleRemovePlace = useCallback(
+      function handleRemovePlace() {
+        setPickedPlaces((prevPickedPlaces) =>
+            prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
+        );
+        setModalIsOpen(false);
 
-    const storedIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
-    localStorage.setItem('selectedPlaces', JSON.stringify((storedIds.filter((id) => id !== selectedPlace.current))))
-  }
+        const storedIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
+        localStorage.setItem('selectedPlaces', JSON.stringify(storedIds.filter((id) => id !== selectedPlace.current)))
+
+      }, []
+  );
+  //useCallback ensures that wrapped function is not recreated after re-rendering. Instead it will be stored internally in
+  //memory and will execute only when surrounding component will execute again.
+
 
   return (
     <>
