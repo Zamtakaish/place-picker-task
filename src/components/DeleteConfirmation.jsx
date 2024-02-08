@@ -1,4 +1,23 @@
+import {useEffect} from "react";
+
 export default function DeleteConfirmation({ onConfirm, onCancel }) {
+
+    useEffect(() => {
+        console.log('TIMER SET');
+        const timer = setTimeout(() => {
+            onConfirm();
+        }, 3000);
+
+         return () => { //executes right before useEffect activates again AND before component dismounts.
+            clearTimeout(timer);
+        }
+    }, [onConfirm]);//will not run another useEffect call because of empty deps.
+    //because function is object, it will be recreated after re-rendering corresponding part of the
+    //code. Thus another object will be created at every re-render.
+    //In that case, there is a risk of creating an infinite loop when using function as dependency.
+    //In this particular project there will be no loop because after re-creating modal window dialogue
+    //part will be removed, so useEffect will not trigger.
+
   return (
     <div id="delete-confirmation">
       <h2>Are you sure?</h2>
